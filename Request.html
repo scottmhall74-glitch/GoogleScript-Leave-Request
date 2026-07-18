@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+<script src ="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" > </script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    
+    
+<div id="header-links">
+    <img src="https://me-rsu74.edupoint.com/Photos/8D/8D749524-419B-4CB2-BEAE-134B947A853D_TitleLogo.PNG" alt="Logo">
+     <br>
+      <div class="dropdown">
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Queue'">Your Queue</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Requests&Filter=0-0'">Department Queued Leaves</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Approved&Filter=0-0'">Department Approve Leave</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Cancelled&Filter=0-0'">Department Cancelled Leave</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Denied&Filter=0-0'">Department Denied Leave</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbzIU3FRAsBJA0qk45NsARnDarzuQrMmj8Xy6uQ4b4tDxNeKfKs/exec'">Older Leave Requests</button>
+  
+       </div>
+       
+       <script>
+          //run isAdminOffice and if true show links
+       </script>
+     
+    </div>    
+    
+    
+ <div id="form">
+   <form id="LeaveForm">
+       
+    <div id ="username" class="color">
+    <?var email = getUser();?>
+    You are currently logged in as: <a href="http://www.carrabec.org"><?=email?></a><br>
+    If you are not <b><?=email?> </b>please <a href="http://www.google.com/url?q=https%3A%2F%2Fdrive.google.com%2Flogout&sa=N&usd=2&usg=AFQjCNEHAobKEpbLaXXXdxDPsXqDK5qCQA">Sign out</a> 
+    and log into your Carrabec account.<br>&nbsp;
+    </div>
+    
+    <div align="center"><button type="button" id="export">Export All Leave to a Google Spreadsheet</button><br>&nbsp;</div>
+    <div id="exportMess" hidden="true">You should receive an email shortly with the link to your Google Spreadsheet<br>&nbsp;</div>
+    <script>
+      $("#export").click(function() {
+        var eURL = google.script.run.createLeaveSpread();
+        $('#export').hide();
+        $('#exportMess').show();
+        //var nURL = "https://docs.google.com/spreadsheets/d/" + eURL
+        //window.open(nURL);
+        
+      })
+    </script>
+    
+    <?var leave = getUserLeaves()?>
+    <?var URL = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?ID=';?>
+    <?if (leave[1][1]) {?>
+    <?var URL2 = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=' + returnApprove();?>
+    <?var filter = returnParameter();?>
+    <?if (returnEMP() != "") {?>
+    <div><a href="<?=URL2?>&Filter=<?=filter?>" target="_top">Remove Employee Filter</a></div>
+    <?}?>
+    <table style="width:100%" align="left" cellpadding="10">
+    <tr align="left">
+     <th>ID</th>
+     <th>Name</th>
+     <th>Buidling/Department</th>
+     <th>Start Date of Leave</th>
+     <th>Total Number of Days Out</th>
+     <th>Leave Type</th>
+     <th>Status</th>
+    </tr>
+    <tr align="left">
+      <td></td>
+      <td>Click on Name to filter by it</td>
+      <td><select name="leaveSchool" id="leaveSchool">
+ <?  var leaveS = getSchools();  ?><option value="0">Filter By: </option><option value="0">No Filter </option>
+ <?  for (var i=2; i < leaveS.length; i++) {  ?>
+ <?if (email == leaveS[i][1] || email == leaveS[i][2] || email == leaveS[i][3] || leaveS[i][4] == email || isAdminOffice()) {?><option value="<?=i?>"><?=leaveS[i][0]?> </option><?}?>
+ <?}?>
+ </select></td>
+      <td></td>
+      <td></td>
+      <td><select name="leaveType" id="leaveType">
+ <?  var leaveT = getLeave();  ?><option value="0">Filter By: </option><option value="0">No Filter </option>
+ <?  for (var i=2; i < leaveT.length; i++) {  ?>
+ <option value="<?=i?>"><?=leaveT[i][0]?> </option>
+ <?}?>
+ </select></td>
+      <td><span id="process" hidden="true">**Processing</span></td>
+    </tr>
+    
+<script>
+ 
+ // if change the leave type filter
+ $( "#leaveType" ).change(function() {
+ $("#process").show();
+  google.script.url.getLocation(function(location) {
+ var ufilter = location.parameter.Filter;
+ var filter = ufilter.toString().split("-");
+ var approve = location.parameter.Approve;
+ var emp = location.parameter.EMP;
+ if (!location.parameter.EMP)
+ var load = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=" + approve + "&Filter=" + filter[0] + "-" + $( "#leaveType" ).val();
+ else 
+  var load = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=" + approve + "&Filter=" + filter[0] + "-" + $( "#leaveType" ).val() + "&EMP=" + location.parameter.EMP;
+ top.location.href = load;
+ });
+});
+
+//if change the school filter
+$( "#leaveSchool" ).change(function() {
+ $("#process").show();
+  google.script.url.getLocation(function(location) {
+ var ufilter = location.parameter.Filter;
+ var filter = ufilter.toString().split("-");
+ var approve = location.parameter.Approve;
+ var emp = location.parameter.EMP;
+ if (!location.parameter.EMP)
+ var load = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=" + approve + "&Filter=" + $( "#leaveSchool" ).val() + "-" + filter[1];
+ else 
+  var load = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=" + approve + "&Filter=" + $( "#leaveSchool" ).val() + "-" + filter[1] + "&EMP=" + location.parameter.EMP;
+ top.location.href = load;
+ });
+});
+</script>
+    
+    
+    <?for (var i = 1; i < leave.length; i++) {?>
+    <tr>
+     <?var user = leave[i][3].toString().split("@");?>
+     <td><a href="<?=URL?><?=leave[i][0]?>" target="_top"><?=leave[i][0]?></a></td><td><a href="<?=URL2?>&Filter=<?=filter?>&EMP=<?=user[0]?>" target="_top"><?=leave[i][2]?></a></td><td><?=leave[i][4]?></td><td><?=leave[i][6]?></td><td><?=leave[i][10]?></td><td><?=leave[i][11]?></td><td><?=leave[i][20]?></td>
+     </tr>
+    <?}?>
+    <td></td>
+    </table>
+       
+       
+    <?}?>
+    
+  </form>
+</div>
+
+<?!= HtmlService.createHtmlOutputFromFile('CSS').getContent(); ?>
