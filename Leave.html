@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+    <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+    <script src ="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" > </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    
+    <div id="header-links">
+     My Leave Requests <br>
+     <img src="https://me-rsu74.edupoint.com/Photos/8D/8D749524-419B-4CB2-BEAE-134B947A853D_TitleLogo.PNG" alt="Logo">
+     <br>
+     
+     <div class="dropdown">
+      <button class="dropbtn" onclick="window.top.location.href = 'https://sites.google.com/a/carrabec.org/leave/leave-form'">Leave Form</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec?Filter=100'">My Leave Requests</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec?Mile=True'">Mileage Reimbursement Forms</button>
+  
+       </div>
+       
+       <script>
+          //run isAdminOffice and if true show links
+       </script>
+     
+    </div>
+    
+    
+    <div id="form">
+    <form id="Form">
+   
+    
+    <div id ="username" class="color">
+    <?var email = getUser();?>
+    You are currently logged in as: <a href="http://www.carrabec.org"><?=email?></a><br>
+    If you are not <?=email?> please <a href="http://www.google.com/url?q=https%3A%2F%2Fdrive.google.com%2Flogout&sa=N&usd=2&usg=AFQjCNEHAobKEpbLaXXXdxDPsXqDK5qCQA">Sign out</a> 
+    and log into your Carrabec account.
+    </div>
+    <div align="right"><button type="button" id="export">Export Leave to a Google Spreadsheet</button></div>
+    <div id="exportMess" hidden="true">You should receive an email shortly with the link to your Google Spreadsheet</div>
+    <script>
+      $("#export").click(function() {
+        var eURL = google.script.run.createLeaveSpread();
+        $('#export').hide();
+        $('#exportMess').show();
+        //var nURL = "https://docs.google.com/spreadsheets/d/" + eURL
+        //window.open(nURL);
+        
+      })
+    </script>
+    <div>
+    <table align="left" cellpadding="10" bgcolor="#F2F3F4">
+    <tr>
+    <th>
+     Leave Still Awaiting Approval
+     </th>
+    </tr>
+    </table>
+    <?var leave = getUserLeaves();?>
+    <?var URL = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec"?>
+    <table style="width:100%" align="left" cellpadding="10" bgcolor="#F2F3F4">
+    <tr>
+     <th>ID</th>
+     <th>Date Submitted</th> 
+     <th>Start Date of Leave</th>
+     <th>Total Number of Days Out</th>
+     <th>Leave Type</th>
+     <th>Request Status</th>
+    </tr>
+    <?for (var i = 0; i < leave.length; i++) {?>
+    <?if (leave[i][3] == email) {?>
+    <tr>
+     <td><a href="<?=URL?>?ID=<?=leave[i][0]?>" target="_top"><?=leave[i][0]?></a></td><td><?=leave[i][1]?></td><td><?=leave[i][6]?></td><td><?=leave[i][10]?></td><td><?=leave[i][11]?></td><td><?=leave[i][20]?></td>
+     </tr>
+     <?}?>
+    <?}?>
+    <td></td>
+    </table>
+    </div>
+     <div id="approved">
+     <p>&nbsp;</p>
+     <table align="left" cellpadding="10" bgcolor="#D1F2EB">
+    <tr>
+    <th>
+     Approved Leave
+     </th>
+     <?var URL = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec"?>
+    </tr>
+    </table>
+    <table style="width:100%" align="left" cellpadding="10" bgcolor="#D1F2EB">
+    <tr>
+     <th>ID</th>
+     <th>Date Submitted</th> 
+     <th>Start Date of Leave</th>
+     <th>Total Number of Days Out</th>
+     <th>Leave Type</th>
+     <th>Request Status</th>
+    </tr>
+    <tr>
+     <td></td>
+     <td></td>
+     <td></td>
+     <td></td>
+     <td><select name="leaveType" id="leaveType">
+ <?  var leaveT = getLeave();  ?><option value="100">Filter By: </option><option value="100">No Filter </option>
+ <?  for (var i=2; i < leaveT.length; i++) {  ?>
+ <option value="<?=i?>"><?=leaveT[i][0]?> </option>
+ <?}?>
+ </select></td>
+     <td><span id="process" hidden="true">**Processing</span></td>
+    </tr>
+     <?var aleave = getUserApprovedLeaves();?>
+    
+    <script>
+$( "#leaveType" ).change(function() {
+ //self.location.replace($("leaveType").val());
+ $("#process").show();
+ var load = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec?Filter=" +  $("#leaveType").val();
+ top.location.href = load;
+})
+</script>
+
+    <?for (i = 0; i < aleave.length; i++) {?>
+    <?if (aleave[i][3] == email) {?>
+    <tr>
+     <td><a href="<?=URL?>?ID=<?=aleave[i][0]?>" target="_top"><?=aleave[i][0]?></a></td><td><?=aleave[i][1]?></td><td><?=aleave[i][6]?></td><td><?=aleave[i][10]?></td><td><?=aleave[i][11]?></td><td><?=aleave[i][20]?></td>
+     </tr>
+     <?}?>
+    <?}?>
+    <td></td>
+    </table>
+    </div> 
+    
+    <div id="denied">
+    <p>&nbsp;</p>
+       <table align="left" cellpadding="10" bgcolor="#F2D7D5">
+    <tr>
+    <th>
+     Denied Leave
+     </th>
+    </tr>
+    </table>
+     
+     <table style="width:100%" align="left" cellpadding="10" bgcolor="#F2D7D5">
+    <tr>
+     <th>ID</th>
+     <th>Date Submitted</th> 
+     <th>Start Date of Leave</th>
+     <th>Total Number of Days Out</th>
+     <th>Leave Type</th>
+     <th>Request Status</th>
+    </tr>
+     <?var dleave = getUserDeniedLeaves();?>
+    <?var URL = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec"?>
+    <?for (i = 0; i < dleave.length; i++) {?>
+    <?if (dleave[i][3] == email) {?>
+    <tr>
+     <td><a href="<?=URL?>?ID=<?=dleave[i][0]?>" target="_top"><?=dleave[i][0]?></a></td><td><?=dleave[i][1]?></td><td><?=dleave[i][6]?></td><td><?=dleave[i][10]?></td><td><?=dleave[i][11]?></td><td><?=dleave[i][20]?></td>
+     </tr>
+     <?}?>
+    <?}?>
+    </table>
+    </div>
+    </form>
+    </div>
+    
+
+ <?!= HtmlService.createHtmlOutputFromFile('CSS').getContent(); ?>
+ 
