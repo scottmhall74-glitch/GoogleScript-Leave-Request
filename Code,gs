@@ -1,0 +1,300 @@
+var building_info = '1KYzn9vwq25lXk4xZN18cN2aZQZri4j9xtFwcWqBCoJc';
+var buildingstab = 'BuildingInfo';
+var LeaveType = 'LeaveType';
+var count = 'Count';
+var misc ='Misc';
+var email = Session.getActiveUser().getEmail();
+var URL = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec?ID=";
+
+function doGet() {
+  var html = HtmlService.createTemplateFromFile('index').evaluate().setTitle('Leave Requests').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL); 
+  
+  return html;
+}
+
+//--------------------------------------------------------------------
+
+function getUser() {
+ 
+  return email;
+  
+}
+
+
+//-------------------------------------------------------------------
+function isAdminOffice() {
+    var miscSheet = SpreadsheetApp.openById(building_info).getSheetByName(misc);
+    var miscData = miscSheet.getDataRange().getValues();
+  
+    var HREmail = miscData[1][1];
+    var Super = miscData[2][1];
+    var perEmail = miscData[8][1];
+    var payEmail = miscData[9][1];
+    
+    var email = getUser();
+    
+    Logger.log(email);
+  
+    if (email == HREmail || email == Super || email == perEmail || email == payEmail)
+      return true;
+    
+    var miscSheet = SpreadsheetApp.openById(building_info).getSheetByName('BuildingInfo');
+    var miscData = miscSheet.getDataRange().getValues();
+    
+
+   for (var i = 2; i < miscData.length; i++) {
+    for (var j = 1; j < 5; j++) {
+      if (email == miscData[i][j])
+       return true;
+    } // end for j
+   
+   
+   } //end for i
+    
+    
+    
+  
+   return false;
+  
+}
+
+//-------------------------------------------------------------------
+
+//--------------------------------------------------------------------
+
+function getName() {
+  email = Session.getActiveUser().getEmail();
+  var result = AdminDirectory.Users.get(email, {fields:'name', viewType:'domain_public'});
+  var fullname = result.name.fullName;
+  Logger.log(fullname);
+  return fullname;
+  
+}
+
+//--------------------------------------------------------------------
+
+function getSchools() {
+  var ss = SpreadsheetApp.openById(building_info).getSheetByName(buildingstab);
+  var sdata = ss.getDataRange().getValues();
+  
+  return sdata;
+}
+
+//--------------------------------------------------------------------
+
+function getLeave() {
+  var ls = SpreadsheetApp.openById(building_info).getSheetByName(LeaveType);
+  var leave = ls.getDataRange().getValues();
+  
+  return leave;
+}
+
+//--------------------------------------------------------------------
+
+function submitData(info) {
+    var ss = SpreadsheetApp.openById(building_info).getSheetByName(buildingstab);
+    var sdata = ss.getDataRange().getValues();
+    var i = 1;
+    var aURL = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?ID=';
+  
+  while (sdata[i][0] != info[4] && i < sdata.length) {
+    i++;
+   }
+    
+    var principal = sdata[i][2];
+    var secretary = sdata[i][1];
+    var speceddir = sdata[i][4];
+    var specedsec = sdata[i][3];
+    
+    var miscSheet = SpreadsheetApp.openById(building_info).getSheetByName(misc);
+    var miscData = miscSheet.getDataRange().getValues();
+    var superEmail = miscData[2][1];
+    var hrEmail = miscData[1][1]; 
+    Logger.log(info);
+  
+  //Get counter ID and then increment it by one in the spreadsheet - Use the non icremented one as the ID
+    var sscounter = SpreadsheetApp.openById(building_info).getSheetByName(count);
+    var countarray = sscounter.getDataRange().getValues();
+    var counter = countarray[0][0];
+    var newcounter = counter+1;
+    var range2 = sscounter.getRange(sscounter.getLastRow(), 1, 1, 1);
+    var countvalues = [[newcounter]];
+    range2.setValues(countvalues); 
+   
+  
+    var requestDB = miscData[3][1];
+    var requestTab = miscData[4][1];
+
+  var subject = info[2] + ' Leave Request for ' + info[6];
+  var subSubject = info[2] + ' Needs a sub on ' + info[6];
+  var secDepart = "";
+  var thdDepart = '';
+  
+   // Beginning of email message to users. 
+    var message = '<div>Name: ' + info[2] + '<br></div><br>' +
+      '<div>Email: ' + email + '<br></div><br>' +
+      '<div>School: ' + info[4] + '<br></div><br>';
+  
+  //if special ed add to message
+  if (info[5] == 'Yes') {
+   message = message + '<div> Part of Special Ed <br></div><br>';  
+  }
+  
+  //adding start date of leave to message
+  message = message + '<div>Start Date of Leave: ' + info[6] + '<br></div><br>';
+  
+  if (info[8] != "") {
+    message = message + '<div>Last Day of Leave: ' + info[8] +'</div><br>';
+  }
+  
+  if ( info[9] != "") {
+    message = message + '<div>' + info[9] +'<br></div><br>';
+  }
+  
+  
+ message = message + '<div>Number of Days Out: ' + info[10] + '<br></div><br>' +
+   '<div>Leave Type: ' + info[11] + '<br></div><br>' +
+   '<div>Reason/Backup: ' + info[12] + '<br></div><br>';
+  if (info[13] == "Yes") {
+    message = message + '<div>' + info[2] + ' needs a sub<br></div><br>';
+  }
+  else {
+    message = message + "<div>" + info[2] + " doesn't need a sub<br></div><br>";
+  }
+  
+  if (info[11] == "Professional") {
+    message = message + '<div>Cost of Event: ' + info[14] + '<br></div><br>' +
+      '<div>Total Mileage: ' + info[15] + '<br></div><br>' +
+      '<div>Destination: ' + info[16] + '<br></div><br>' +
+      '<div>Other Costs: ' + info[17] + '<br></div><br>' +
+      '<div>Reasons for other costs: ' + info[18] + '<br></div><br>' +
+      '<div>People carpooling with, if driving: ' + info[19] + '<br></div><br>';  
+  }
+  
+   if (info[25] != "") {
+     message = message + "<div>Contacting Second Department: " + info[25] + "<br></div><br>";
+     secDepart = info[25];
+  }
+  
+   if (info[26] != "") {
+    message = message + "<div>Contacting Third Department: " + info[26] + "<br></div><br>";
+     secDepart = info[26];
+  }
+  
+  var approveMessage = message;
+  var staffMessage = '<div><a href="'+ URL + counter + '">Click to view this leave</a></div><br><div>ID: ' + counter + '</div><br>' + message;
+  var secMessage = message;
+  
+  
+  
+  if (superEmail == principal) {
+    //go directly to verification 
+    info[20] = 'Stage1 Approved';
+    staffMessage = staffMessage + '<div>Status: Stage 1 Approved<br></div><br><div><a href="'+ URL + counter + '">Click to view this leave</a></div>';
+    approveMessage = approveMessage + '<div>Status: Stage 1 Approved<br></div><br>';
+    secMessage = secMessage + '<div>Status: Stage 1 Approved<br></div><br><div><a href="'+ aURL + counter + '">Click to view this leave</a></div>';
+    
+    approveMessage = approveMessage + "<div>Click <a href='" + aURL + counter + "'>here</a> to add notes and approve/deny the leave.</div>";
+    approveMessage = approveMessage + "<div>Or you can directly approve the leave without notes: <a href='" + aURL + counter + "&Approve=True'>Approve Leave</a></div>";
+ 
+    //add url to approve message
+    //send email to sec
+     if (info[13] == "Yes") {
+      secMessage = "<div>A Sub is needed for this request &nbsp;</div>" + secMessage;
+      MailApp.sendEmail(hrEmail, subSubject, approveMessage, {noReply: true, htmlBody: approveMessage});
+      MailApp.sendEmail(secretary, subSubject, approveMessage, {noReply: true, htmlBody: approveMessage});
+    }
+    else {
+      MailApp.sendEmail(secretary, subject, approveMessage, {noReply: true, htmlBody: approveMessage});
+    }
+    
+  }
+  
+  else if (info[5] == "Yes") {
+      //add url to special ed director message
+      //Mail to special ed people
+     //mail to school but with no link.
+    approveMessage = approveMessage + '<div>Status: New Spec Ed Request<br></div><br>';
+    secMessage = secMessage + '<div>Status: New Spec Ed Request<br></div><br><div><a href="'+ aURL + counter + '">Click to view this leave</a></div>';
+    staffMessage = staffMessage = '<div><a href="'+ URL + counter + '">Click to view this leave</a></div><br><div>ID: ' + counter + '</div><br>' + message + '<div>Status: New Spec Ed Request<br></div><br>';
+    
+    if (info[13] == "Yes") {
+      secMessage = "<div>A Sub is needed for this request &nbsp;</div>" + secMessage;
+      MailApp.sendEmail(secretary, subSubject, secMessage, {noReply: true, htmlBody: secMessage});
+    }
+    else {
+      MailApp.sendEmail(secretary, subject, secMessage, {noReply: true, htmlBody: secMessage});
+    }
+    
+    approveMessage = approveMessage + "<div>Click <a href='" + aURL + counter + "'>here</a> to add notes and approve/deny the leave.</div>";
+    approveMessage = approveMessage + "<div>Or you can directly approve the leave without notes: <a href='" + aURL + counter + "&Approve=True'>Approve Leave</a></div>";
+    
+    
+    MailApp.sendEmail(principal, subject, staffMessage, {noReply: true, htmlBody: staffMessage});
+    MailApp.sendEmail(speceddir, subject, approveMessage, {noReply: true, htmlBody: approveMessage});
+    MailApp.sendEmail(specedsec, subject, staffMessage, {noReply: true, htmlBody: staffMessage});
+    
+  }
+  else {
+   //add url to approvemessage 
+    
+   approveMessage = approveMessage + '<div>Status: New Request<br></div><br>';
+    secMessage = secMessage + '<div>Status: New Request<br></div><br><div><a href="'+ aURL + counter + '">Click to view this leave</a></div>';
+    staffMessage = staffMessage = '<div><a href="'+ URL + counter + '">Click to view this leave</a></div><br><div>ID: ' + counter + '</div><br>' + message + '<div>Status: New Request<br></div><br>'; 
+    
+    if (info[13] == "Yes") {
+      secMessage = "<div><b>A Sub is needed for this request </b>&nbsp;</div>" + secMessage;
+      MailApp.sendEmail(secretary, subSubject, secMessage, {noReply: true, htmlBody: secMessage});
+    }
+    else {
+      MailApp.sendEmail(secretary, subject, secMessage, {noReply: true, htmlBody: secMessage});
+    }
+    
+    approveMessage = approveMessage + "<div>Click <a href='" + aURL + counter + "'>here</a> to add notes and approve/deny the leave.</div>";
+    approveMessage = approveMessage + "<div>Or you can directly approve the leave without notes: <a href='" + aURL + counter + "&Approve=True'>Approve Leave</a></div>";
+ 
+    
+    MailApp.sendEmail(principal, subject, approveMessage, {noReply: true, htmlBody: approveMessage});
+    
+  }
+  
+    //add a check for second and third department and to send to them.
+   if (info[25] != "") {
+     var i2 = 2; 
+     while (i2 < sdata.length && sdata[i2][0] != info[26]) {
+       i2++;
+      }
+     
+     if (i2 < sdata.length) {
+       MailApp.sendEmail(sdata[i2][1], subject, secMessage, {noReply: true, htmlBody: staffMessage});
+       MailApp.sendEmail(sdata[i2][2], subject, secMessage, {noReply: true, htmlBody: staffMessage});
+     }
+     
+      if (info[26] != "") {
+        info[25] = info[25] + "," + info[26];
+        i2 = 2;
+        while (i2 < sdata.length && sdata[i2][0] != info[26]) {
+         i2++;
+        } 
+        
+        if (i2 < sdata.length) {
+       MailApp.sendEmail(sdata[i2][1], subject, secMessage, {noReply: true, htmlBody: staffMessage});
+       MailApp.sendEmail(sdata[i2][2], subject, secMessage, {noReply: true, htmlBody: staffMessage});
+     }
+        
+      }// end if info 26 has data 
+    }//end if info 25 has data
+  
+  
+  //email staff their request.
+  staffMessage = staffMessage + "<div>The link on the top of the email can also be used to cancel your leave at any time</div>";
+  MailApp.sendEmail(email, " Your Leave Request for " + info[6], staffMessage, {noReply: true, htmlBody: staffMessage});
+  
+  //add leave to leave requests tab
+    var values = [[counter, new Date(), info[2], email, info[4], info[5], info[6], info[7], info[8], info[9], info[10], info[11], info[12], info[13], info[14], info[15], info[16], info[17], info[18], info[19], info[20], info[21], info[22], info[23], info[24], info[25]]];
+
+    var ssDB = SpreadsheetApp.openById(requestDB).getSheetByName(requestTab);
+    var lastRow = ssDB.getDataRange().getValues().length ;
+    var range = ssDB.getRange(lastRow+1, 1, 1, 26);
+    range.setValues(values);
+}
