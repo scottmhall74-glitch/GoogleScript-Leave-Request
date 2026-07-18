@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+
+<script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+<script src ="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" > </script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
+
+
+<div id="form">
+<form id="leaveForm">
+
+<div id ="username" class="color">
+<?var email = getUser();?>
+You are currently logged in as: <a href="http://www.carrabec.org"><?=email?></a><br>
+If you are not <?=email?> please <a href="http://www.google.com/url?q=https%3A%2F%2Fdrive.google.com%2Flogout&sa=N&usd=2&usg=AFQjCNEHAobKEpbLaXXXdxDPsXqDK5qCQA">Sign out</a> 
+and log into your Carrabec account.
+
+</div>
+
+<div class="required">
+All Required Fields Will Be This Color
+</div>
+
+<?var name = getName();?>
+<div id="nameDiv" class="required">
+Full Name: <input type="text" name="name" id="name" value="<?=name?>">
+<br>
+If this is not your name please ensure that you are logged in as your Carrabec account.
+<span id="nameError" hidden="true">
+<p>
+** Please enter in your name ** 
+</span>
+</div>
+
+<div id ="schoolsDiv" class="required">     
+School: <select name="schools" id="schools">
+<?   var schools = getSchools();  ?>   
+<?   for (var i = 1; i < schools.length; i++){ ?>
+     <option value="<?=schools[i][0];?>"><?=schools[i][0]?></option><?}?>
+</select>
+<br><br>Are you a member of special ed? <select name="speced" id ="speced">
+<option value="No">No</option>
+<option value="Yes">Yes</option>
+</select>
+<span id="schoolError" hidden="true">
+<p>
+** Please select your school / department ** 
+</span>
+</div>
+<div id="othernotice" class="color" hidden="true">
+<p>If you wish to notify another department/school other then the one above, please select it here</p> 
+<select name="onotice" id ="onotice"> <option value="false"></option>
+<?   var schools = getSchools();  ?>   
+<?   for (var i = 3; i < schools.length; i++){ ?>
+<option value="<?=schools[i][0]?>"><?=schools[i][0]?></option><?}?></select>
+
+<div id="othernotice2" class="color" hidden="true">
+<p>If you wish to notify a third department/school other then the two above, please select it here</p> 
+<select name="onotice2" id ="onotice2"> <option value="false"></option>
+<?   var schools = getSchools();  ?>   
+<?   for (var i = 3; i < schools.length; i++){ ?>
+<option value="<?=schools[i][0]?>"><?=schools[i][0]?></option><?}?></select>
+</div>
+</div>
+
+<div id="startDiv" class="required">
+Date of leave: <input type="date" name="startDate" id="startDate" class="startDate">
+<br><br>
+<textarea name="startReason" id="startReason" hidden="true" rows="6" placeholder="Please enter the reason for the less than 4 day notice"></textarea>
+
+<span id="startError" hidden="true">
+<p>
+** Please select the start date of your leave ** <p></p>
+
+</span>
+
+<span id="startRError" hidden="true">
+<p>** Your leave requires a reason for the less than 4 day notice for leave **</p>
+</span>
+</div>
+
+
+<div id="reqTimeDiv" class="required">
+How much time are you requesting: <select name="reqTime" id="reqTime">
+<option value="Error">-- Please Select --</option>
+<option value="1/4 Day">1/4 of Day </option>
+<option value="Half Day - Out in AM">Half Day - Out in AM</option>
+<option value="Half Day - Out in PM">Half Day - Out in PM</option>
+<option value="3/4 Day">3/4 of Day </option>
+<option value="1 Day">1 Day </option>
+<?var daycount = 1.5; ?>
+<?for (var i = 1; i < 39;i++) {?>
+<option value="<?=daycount?> Days"><?=daycount?> Days </option><?daycount = daycount + .5;?>
+<?}?>
+<option value="More Than 20 Days">More than 20 days </option>
+</select>
+<span id="reqTimeError" hidden="true">
+<p>
+** Please select the amount of time that you are requesting ** 
+</span>
+</div>
+
+
+<div id="timeDiv" class="required" hidden="true">
+What time are you   <select name="leavearrive" id="leavearrive">
+<option value="Leaving at ">leaving at </option>
+<option value="Arriving at ">arriving at</option>
+</select>: <input type="text" name="ltime" id="ltime" class="ltime">
+
+<span id="ltimeError" hidden="true">
+<p>
+** Please enter the time that you are leaving ** 
+</span>
+</div>
+
+
+<div id="lastLeavediv" hidden="true" class="required">
+Last Date of leave: <input type="date" name="lastDate" id="lastDate" class="lastDate">
+
+<span id="lastError" hidden="true">
+<p>
+** Please select the last date of your leave that is after your start date** 
+</span>
+
+</div>
+
+
+<div id="leaveDiv" class="required" hidden="true">
+ Nature of Leave: <select name="leaveType" id="leaveType">
+ <?  var leave = getLeave();  ?>
+ <?  for (var i=1; i < leave.length; i++) {  ?>
+ <option value="<?=leave[i][0]?>"><?=leave[i][0]?> </option>
+ <?}?>
+  <?// in case we wish to add this   <option value="Sick/Ill">Sick/Ill</option>?>
+ </select>
+ <span id="leaveError" hidden="true">
+ <p>** Please select the leave type **</p>
+ </span>
+</div>
+
+<div id="family" class="required" hidden="true">
+Family Member Effected: <select name="familym" id="familym">
+<option value="Error">-- Please Select --</option>
+<option value="Spouse or Person Acting in Similar Relationship">Spouse or Person Acting in Similar Relationship</option>
+<option value="Parent">Parent</option>
+<option value="Current Step Parent">Current Step Parent</option>
+<option value="Foster Parent">Foster Parent</option>
+<option value="Sibling">Sibling</option>
+<option value="Child">Child</option>
+<option value="Current Parent-in-Law">Current Parent-in-Law</option>
+<option value="Grandparent">Grandparent</option>
+<option value="Someone You Are A Legal Guardian Of">Someone You Are A Legal Guardian Of (SS CBA Only)</option>
+<option value="Grandchild">Grandchild (SS CBA Only)</option>
+</select>
+
+<span id="familyerror" hidden="true">
+ <p>** Please select the family member effected **</p>
+ </span>
+</div>
+
+<div id="reasonDiv" class="color">
+Reason/Backup for being out (if you are going to a conference/training, please put in the URL of the event that you are attending):
+<br><br>
+<textarea name="Reason" id="Reason" rows="6"></textarea>
+
+</div>
+
+<script>
+$( "#reqTime" ).change(function() {
+ if ( $( '#reqTime' ).val().indexOf("Hour") >= 0) {
+  $( "#leaveHourDiv" ).show();
+  $( "#leaveDiv" ).hide();
+ }
+ else {
+  $( "#leaveHourDiv" ).hide();
+  $( "#leaveDiv" ).show();
+ }
+ 
+})
+</script>
+
+<div id="Subdiv"  class="color">
+Will you need a sub during your leave?
+<select name="sub" id="sub">
+<option value="No">No </option>
+<option value="Yes">Yes </option>
+</select>
+</div>
+
+<div id="profInfodiv" class="color" hidden="true">
+<br><div>
+Only costs filled out will be reimbursed.</div>
+Please enter the cost of the conference/training that you will be attending (Teachers and Support Staff $250 per approved event)
+<br><input type="number" id="cost" name="cost">
+<br><br>
+Please enter in the total mileage that is in addition to your daily commute to work: ie I travel 10 miles to work, the conference is 20 miles away the total is 10 miles each way, so 20 total miles
+<br><input type="number" id="mile" name="mile">
+<br><br>
+Please enter your destination:
+<br><input type="text" name="dest" id="dest">
+<br><br>
+Other costs: Cost/Reason
+<br><input type="number" name="rcost" id="rcost" placeholder="Cost">  <input type="text" name="rreason" id="rreason" placeholder="Reason">
+<br><br>
+If carpooling and you are the driver, please list other staff who will be riding with you. Example: John Doe, Jane Doe, etc
+<br>
+<input type="text" name="carpool" id="carpool">
+<br>
+
+</div>
+
+<script> // if any of these departments show the contact additional department fields
+$( "#schools" ).change(function() {
+    /*var schools = google.script.run.getSchools();
+    var i = 2;
+    
+    while (i < schools.length && $( "#schools" ).val() != schools[i][0]) 
+     i++;
+     
+    if (i <= schools.length && $( "#schools" ).val() == schools[i][0]) {
+     if (schools[i][7] == "Y")
+       $( "#othernotice" ).show();
+     else $( "#othernotice" ).hide();
+    }
+   */
+    if ($( "#schools" ).val() == "Bus Driver") {
+     $( "#othernotice" ).show();
+    }
+    else if ($( "#schools" ).val() == "Custodial/Maint") {
+     $( "#othernotice" ).show();
+    }
+    else if ($( "#schools" ).val() == "Curriculum Coaches - PE Specialist Teacher") {
+     $( "#othernotice" ).show();
+    }
+    else if ($( "#schools" ).val() == "Food Service") {
+     $( "#othernotice" ).show();
+    }
+    else if ($( "#schools" ).val() == "Specialist Teacher") {
+     $( "#othernotice" ).show();
+    }
+    else if ($( "#schools" ).val() == "Technology") {
+     $( "#othernotice" ).show();
+     }
+     
+    else if ($( "#schools" ).val() == "Carrabec High School") {
+     $( "#othernotice" ).show();
+    }
+    else $( "#othernotice" ).hide();
+      
+     })
+     
+  $( "#othernotice" ).change(function() {
+   // if ($( "#schools" ).val() == "Bus Driver" && $( "#onotice" ).val() == "Custodial/Maint") {
+   if ($( "#onotice" ).val() != "false"){
+     $( "#othernotice2" ).show();
+    }
+   // else if ($( "#schools" ).val() == "Custodial/Maint" && $( "#onotice" ).val() == "Bus Driver") {
+   //  $( "#othernotice2" ).show();
+   // }
+     else $( "#othernotice2" ).hide();
+   } 
+)
+</script>
+
+
+<script> // if leave type changes and is professional show professional leave additional info
+
+$( "#leaveType" ).change(function() {
+ if ( $( "#leaveType" ).val() == "Professional") {
+  $( "#profInfodiv" ).show();
+ }
+ else $( "#profInfodiv" ).hide(); // put in case sick/ill hide reason for being out
+ if ($( "#leaveType" ).val() == "FI" || $( "#leaveType" ).val() == "Bereavement"){ 
+   $( "#family" ).show();
+ }
+ else $( "#family" ).hide(); // put in case sick/ill hide reason for being out
+})
+
+</script>
+
+<script>
+$( "#reqTime" ).change(function() {
+ if ( $( "#reqTime" ).val().indexOf(" Days") >= 0) {
+  $( "#lastLeavediv" ).show();
+ }
+ else $( "#lastLeavediv" ).hide();
+ 
+ if ( $( "#reqTime" ).val().indexOf("/4") >= 0) {
+  $( "#timeDiv" ).show();
+ }
+ else $( "#timeDiv" ).hide();
+ 
+ })
+</script>
+
+
+<script> //if start date is less then 4 days from today show reason box which becomes required
+$( "#startDate" ).change(function() {
+ var day = new Date();
+ day.setDate(day.getDate() + 4);
+ //var cday = new Date(day.getFullYear(), day.getMonth(), Day.getDate());
+ var dday = $( "#startDate" ).val().split("-");
+ var sday = new Date();
+ sday.setFullYear(dday[0], dday[1]-1, dday[2]);
+  
+ if ( sday <= day ) {
+  $( "#startReason" ).show();
+  }
+  else $( "#startReason" ).hide();
+  
+})
+</script>
+
+</form>
+<div id="DivSubmit">
+<input type="button" value="Submit" id="submit" class="submit">
+</div>
+<div id="processing" hidden="true">
+Processing...
+</div>
+</div>
+<span id="errors" hidden="true">
+Please fix the errors in red above.
+</span>
+<div id="done" hidden="true">
+Thank you, your request has been submitted. You should receive an email shortly.
+</div>
+
+<?!= HtmlService.createHtmlOutputFromFile('CSS').getContent(); ?>
+<script>
+  
+
+
+  $("#submit").click(function() {
+       var error = false;
+       var info = new Array();
+       info[12] ="";
+   
+   $( "#processing" ).show();
+   
+     if ($( "#name" ).val() == '') {
+     $( "#nameError" ).show();
+     error = true;
+     }
+     else { 
+     $( "#nameError" ).hide();
+     info[2] = $( "#name" ).val();
+     info[3] = google.script.run.getUser();
+     }
+     
+    if ($( "#schools" ).val() == '--Please Select--') {
+    $( "#schoolError" ).show();
+    error = true;
+    }
+    else {
+    $( "#schoolError" ).hide();
+    info[4] = $( "#schools" ).val();
+    info[5] = $( "#speced" ).val();
+    
+    if ( $( "#onotice" ).val() != "false") {
+    info[25] = $( "#onotice" ).val();
+    }
+    else {
+    info[25] = "";
+    }
+    }
+    
+    if ( $( "#startDate" ).val() == '') {
+     $( "#startError" ).show();
+     error = true;
+    }
+    else {
+     $( "#startError" ).hide();
+     info[6] = $( "#startDate" ).val();
+    
+    //check days out & reason  
+    var day = new Date();
+    day.setDate(day.getDate() + 4);
+    var dday = $( "#startDate" ).val().split("-");
+    var sday = new Date();
+    sday.setFullYear(dday[0], dday[1]-1, dday[2]);
+  
+    if ( sday <= day && $( "#startReason" ).val() == "" ) {
+     $( "#startRError" ).show();
+     error = true;
+     }
+    else $( "#startRError" ).hide();
+    info[12] = $( "#startReason" ).val() + " :  ";
+   }
+   
+   if ($( "#reqTime" ).val().indexOf("Error") >= 0) {
+   $( "#reqTimeError" ).show();
+   error = true;
+   }
+   else {
+   if ($( "#reqTime" ).val().indexOf("Hours") >= 0) {
+   $( "#reqTimeError" ).hide();
+   info[10] = $( "#reqTime" ).val();
+   info[11] =$( "#leaveHourType" ).val();
+   }
+   else {
+   $( "#reqTimeError" ).hide();
+   info[10] = $( "#reqTime" ).val();
+   }
+   }
+    
+   if ($( "#reqTime" ).val().indexOf("Hour") >= 0 && $( "#ltime" ).val() == '') { 
+    $( "#ltimeError" ).show();
+    error = true;
+    }
+    else if ($( "#reqTime" ).val().indexOf("Hour") >= 0) {
+    $( "#ltimeError" ).hide();
+    info[9] = $( "#leavearrive" ).val() + $( "#ltime" ).val();
+    }
+    else {
+    $( "#ltimeError" ).hide();
+    info[9] = '';
+    }
+    
+    
+   if ($( "#reqTime" ).val().indexOf('Days') >=0 && $( "#lastDate" ).val() == '') {
+    $( "#lastError" ).show();
+    error = true;
+   }
+   else {
+    if ($( "#reqTime" ).val().indexOf('Days') >=0) {
+    var larray = $( "#lastDate" ).val().split("-");
+    var ldate = new Date(larray[0], larray[1]-1, larray[2]);
+    
+    if (ldate <= sday) {
+      $( "#lastError" ).show();
+      error = true;
+    }
+    else {
+    $( "#lastError" ).hide();
+    info[8] = $( "#lastDate" ).val();
+     }
+     }
+     else {
+    $( "#lastErrorLess" ).hide();
+     info[8] = "";
+     }
+   }
+
+   // bereavement or FI family member notification
+   if ($( "#leaveType" ).val() == "FI" || $( "#leaveType" ).val() == "Bereavement"){ 
+    if ( $( "#familym" ).val() == "Error") {
+     error = true;
+     $("#familyerror").show();
+    }
+    else {
+    $("#familyerror").hide();
+    info[12] = info[12] + $( "#leaveType" ).val() + " is for " + $( "#familym" ).val() + " :  ";
+    }
+   }
+   else $("#familyerror").hide();
+   
+   if ( $( "#leaveType" ).val().indexOf('Select') >= 0 && $( "#reqTime" ).val().indexOf('Hour') <= 0) {
+   $( "#leaveError" ).show();
+   error = true;
+   }
+   else {
+   if ( $( "#reqTime" ).val().indexOf('Hour') >= 0 ) {
+   $( "#leaveError" ).hide();
+   info[11] =$( "#leaveHourType" ).val();
+   } 
+   else {
+    $( "#leaveError" ).hide();
+   info[11] = $ ( "#leaveType" ).val();
+   }
+   }
+    
+   
+   if (!error) {
+   var cDate = day.getMonth() + "/" + day.getDate() + "/" + day.getFullYear();
+   info[1] = cDate;
+   info[7] = "";
+   info[12] = info[12] + $( "#Reason" ).val() ;
+   info[13] = $( "#sub" ).val();
+   
+   if ($( "#leaveType" ).val() == "Professional") {
+   
+   info[14] = $( "#cost" ).val();
+   info[15] = $( "#mile" ).val();
+   info[16] = $( "#dest" ).val();
+   info[17] = $( "#rcost" ).val();
+   info[18] = $( "#rreason" ).val();
+   info[19] = $( "#carpool" ).val();
+   }
+   else {
+   info[14] = '';
+   info[15] = '';
+   info[16] = '';
+   info[17] = '';
+   info[18] = '';
+   info[19] = '';
+   }
+  
+   
+   if ( $( "#speced" ).val() == 'No' ) {
+   info[20] = "New Request";
+   }
+   else {
+   info[20] = "New Spec Ed Request";
+   }
+  
+   info[21] = "";
+   info[22] = "";
+   info[23] = "";
+   info[24] = "";
+   
+   if ($( "#onotice" ).val() != "false") {
+   info[25] = $( "#onotice" ).val();
+   }
+   else 
+   {
+   info[25] = "" ;
+   }
+   
+   
+   if ($( "#onotice2" ).val() != "false" && $( "#onotice" ).val() != "false") {
+   info[26] = $( "#onotice2" ).val();
+   }
+   else 
+   {
+   info[26] = "" ;
+   }
+  
+   $( "#DivSubmit" ).hide();
+   google.script.run.submitData(info);
+   $( "#done" ).show();
+   $( "#errors" ).hide();
+   $( "#form" ).hide();
+   $( "#processing" ).hide();
+   }
+   else {
+    $( "#errors" ).show();
+    $( "#processing" ).hide();
+   }
+   
+  })
+
+</script>
