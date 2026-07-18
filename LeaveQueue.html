@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+<script src ="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" > </script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  
+<div id="header-links">
+<img src="https://me-rsu74.edupoint.com/Photos/8D/8D749524-419B-4CB2-BEAE-134B947A853D_TitleLogo.PNG" alt="Logo">
+     <br>
+      <div class="dropdown">
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Queue'">Your Queue</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Requests&Filter=0-0'">Department Queued Leaves</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Approved&Filter=0-0'">Department Approve Leave</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Cancelled&Filter=0-0'">Department Cancelled Leave</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Denied&Filter=0-0'">Department Denied Leave</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbzIU3FRAsBJA0qk45NsARnDarzuQrMmj8Xy6uQ4b4tDxNeKfKs/exec'">Older Leave Requests</button>
+  
+       </div>
+       
+       <script>
+          //run isAdminOffice and if true show links
+       </script>
+     
+    </div>
+
+
+ <div id="form">
+   <form id="LeaveForm">
+   
+    <div id ="username" class="color">
+    <?var email = getUser();?>
+    You are currently logged in as: <a href="http://www.carrabec.org"><?=email?></a><br>
+    If you are not <b><?=email?> </b>please <a href="http://www.google.com/url?q=https%3A%2F%2Fdrive.google.com%2Flogout&sa=N&usd=2&usg=AFQjCNEHAobKEpbLaXXXdxDPsXqDK5qCQA">Sign out</a> 
+    and log into your Carrabec account.
+    </div>
+    
+    <?var queue = getQueue()?>
+    <?var URL = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?ID=';?>
+    <?if (queue[1][1]) {?>
+       
+    <table style="width:100%" align="left" cellpadding="10" bgcolor="#F2F3F4">
+    <tr align="left">
+     <th>ID</th>
+     <th>Name</th>
+     <th>Buidling/Department</th>
+     <th>Start Date of Leave</th>
+     <th>Total Number of Days Out</th>
+     <th>Leave Type</th>
+    </tr>
+    <?for (var i = 1; i < queue.length; i++) {?>
+    <tr>
+     <td><a href="<?=URL?><?=queue[i][0]?>" target="_top"><?=queue[i][0]?></a></td><td><?=queue[i][2]?></td><td><?=queue[i][4]?></td><td><?=queue[i][6]?></td><td><?=queue[i][10]?></td><td><?=queue[i][11]?></td>
+     </tr>
+    <?}?>
+    <td></td>
+    </table>
+       
+       
+    <?}?>
+    
+  </form>
+</div>
+<?!= HtmlService.createHtmlOutputFromFile('CSS').getContent(); ?>
+
+
