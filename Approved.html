@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+    <script src ="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" > </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    
+    <div id="header-links">
+    <img src="https://me-rsu74.edupoint.com/Photos/8D/8D749524-419B-4CB2-BEAE-134B947A853D_TitleLogo.PNG" alt="Logo">
+     <br>
+      <div class="dropdown">
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Queue'">Your Queue</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Requests&Filter=0-0'">Department Queued Leaves</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Approved&Filter=0-0'">Department Approve Leave</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Cancelled&Filter=0-0'">Department Cancelled Leave</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwlNVj76AW-KaDT2DnQNAExjr2vpfYfPDYOM6cGPoNLn_9pzHM/exec?Approve=Denied&Filter=0-0'">Department Denied Leave</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbzIU3FRAsBJA0qk45NsARnDarzuQrMmj8Xy6uQ4b4tDxNeKfKs/exec'">Older Leave Requests</button>
+  
+       </div>
+       
+       <script>
+          //run isAdminOffice and if true show links
+       </script>
+     
+    </div>
+    
+    
+    <div id="form">
+    <form id="LeaveForm">
+    
+    <div id ="username" class="color">
+    <?var email = getUser();?>
+    You are currently logged in as: <a href="http://www.carrabec.org"><?=email?></a><br>
+    If you are not <b><?=email?> </b>please <a href="http://www.google.com/url?q=https%3A%2F%2Fdrive.google.com%2Flogout&sa=N&usd=2&usg=AFQjCNEHAobKEpbLaXXXdxDPsXqDK5qCQA">Sign out</a> 
+    and log into your Carrabec account.
+    </div>
+    
+    <?var leave = getUserLeave();?>
+    <?if (leave != 0) {?>
+    <div id="approved" hidden="true">You approved the leave below:</div>
+    <div>
+    Your Leave ID is: <b> <?=leave[0]?></b>
+    </div>
+    
+    <div id="process">
+    Processing
+    </div>
+    
+    <div class="required">
+    Full Name: <b><?=leave[2]?></b>
+    </div>
+    
+    <div class="required">
+    Date/Time Submitted: <b><?=leave[1]?></b>
+    </div>
+
+    <div class="required">
+    Building/Department: <b><?=leave[4]?></b>
+    <?if (leave[5] == "Yes") { ?><br><br><b>You are a member of Special Ed</b><?}?> 
+    </div>
+    
+    <div class="required">
+    Start Date of Leave: <b><?=leave[6]?></b>
+    </div>
+    
+    <?if (leave[7]) {?>
+      <div class="required">
+      Will be out: <b><?=leave[7]?></b>
+      </div>
+    <?}?>
+    
+     <?if (leave[8]) {?>
+      <div class="required">
+      Will be out until: <b><?=leave[8]?></b>
+      </div>
+    <?}?>
+    
+    <?if (leave[9]) {?>
+      <div class="required">
+      Will be: <b><?=leave[9]?></b>
+      </div>
+    <?}?>
+    
+    <div class="required">
+    Total time out: <b><?=leave[10]?></b>
+    </div>
+    
+    <div class="required">
+    Leave Type: <b><?=leave[11]?></b>
+    </div>
+   
+   <?if (leave[12]) {?>
+    <div class="required">
+    Reason/Backup: <b><?=leave[12]?></b>
+    </div>
+    <?}?>
+    
+    <?if (leave[13] == "Yes") {?>
+    <div class="required">
+    <b>A Substitute Is Needed To Cover This Leave</b>
+    </div>
+    <?}?>
+    
+    <?if (leave[11] == 'Professional') { ?>
+    <div class="required">
+    Cost of Events: <b><?=leave[14]?></b>
+    </div>
+    
+    <div class="required">
+    Total Mileage: <b><?=leave[14]?></b>
+    </div>
+    
+    <div class="required">
+    Destination: <b><?=leave[14]?></b>
+    </div>
+    
+    <div class="required">
+    Other Costs: <b><?=leave[14]?></b>
+    </div>
+    
+    <div class="required">
+    Reasons for other costs: <b><?=leave[14]?></b>
+    </div>
+    
+    <div class="required">
+    People carpooling with if driving: <b><?=leave[14]?></b>
+    </div>
+    <?} //end if leave if professional?>    
+   
+   <div class="required">
+    Status of Request: <b><?=leave[20]?></b>
+    </div>
+    
+     <?if (leave[21]) {?>
+    <div class="required">
+    Dates Approved: <b><?=leave[21]?></b>
+    </div>
+    <?}?>
+    
+     <?if (leave[22]) {?>
+    <div class="required">
+    Supervisor Notes: <b><?=leave[22]?></b>
+    </div>
+    <?}?>
+    
+     <?if (leave[23]) {?>
+    <div class="required">
+    HR Notes: <b><?=leave[23]?></b>
+    </div>
+    <?}?>
+    
+     <?if (leave[24]) {?>
+    <div class="required">
+    Superintendent Notes: <b><?=leave[24]?></b>
+    </div>
+    <?}?>
+   
+    <?if (leave[25]) {?>
+    <div class="required">
+    Other department to contact: <b><?=leave[25]?></b>
+    </div>
+    <?}?>
+  <?}?>
+</form>
+</div>
+<?!= HtmlService.createHtmlOutputFromFile('CSS').getContent(); ?>
+
+<script>
+ 
+  google.script.url.getLocation(function(location) {
+   google.script.run.approveLeave(location.parameter.ID, "");
+  });
+  
+ $( '#process' ).hide();
+ $( '#approved' ).show(); 
+</script>
