@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+    <script src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+    <script src ="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" > </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    
+   <div id="header-links">
+    Mileage Reimbursement <br>
+    
+     <img src="https://me-rsu74.edupoint.com/Photos/8D/8D749524-419B-4CB2-BEAE-134B947A853D_TitleLogo.PNG" alt="Logo">
+     <br>
+     <div class="dropdown">
+      <button class="dropbtn" onclick="window.top.location.href = 'https://sites.google.com/a/carrabec.org/leave/leave-form'">Leave Form</button>
+     
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec?Filter=100'">My Leave Requests</button>
+      
+      <button class="dropbtn" onclick="window.top.location.href = 'https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec?Mile=True'">Mileage Reimbursement Forms</button>
+  
+       </div>
+     </div>
+
+    
+   
+   
+   <div id="form">
+    <form id="Form">
+    <div id ="username" class="color">
+    <?var email = getUser();?>
+    You are currently logged in as: <a href="http://www.carrabec.org"><?=email?></a><br>
+    If you are not <?=email?> please <a href="http://www.google.com/url?q=https%3A%2F%2Fdrive.google.com%2Flogout&sa=N&usd=2&usg=AFQjCNEHAobKEpbLaXXXdxDPsXqDK5qCQA">Sign out</a> 
+    and log into your Carrabec account.
+    </div>
+    
+    <div>
+      <p>&nbsp;</p>Mileage forms that are not yet created will be created automatically when you visit this site. You will get an email for your mileage forms for future access when they are created.
+    &nbsp;<p> </p>
+    </div>
+    
+    <div id="approved">
+     <table align="left" cellpadding="10" bgcolor="#D1F2EB">
+    <tr>
+    <th>
+     Mileage Leave Forms
+     </th>
+     <?var URL = "https://script.google.com/a/carrabec.org/macros/s/AKfycbwYd2hZxgTcgiIRQGmTtH0pua0E31zJk7BLYHpxoA/exec"?>
+    </tr>
+    </table>
+    <table style="width:100%" align="left" cellpadding="10" bgcolor="#D1F2EB">
+    <tr align="left">
+     <th>Mileage Form</th>
+     <th>Date Submitted</th> 
+     <th>Start Date of Leave</th>
+     <th>Total Number of Days Out</th>
+     <th>Total Mileage</th>
+     <th>Destination</th>
+    </tr>
+     <?var aleave = getUserApprovedLeaves();?>
+    <?for (var i = 0; i < aleave.length; i++) {?>
+    <?if (aleave[i][3] == email && aleave[i][11] == 'Professional') {?>
+    <tr align="left">
+     <?var url = getMileage(aleave[i][0]);?>
+     <td><a href="<?=url?>" target="_blank">Mileage Form</a></td>
+     <td><?=aleave[i][1]?></td>
+     <td><?=aleave[i][6]?></td>
+     <td><?=aleave[i][10]?></td>
+     <td><?=aleave[i][15]?></td>
+     <td><?=aleave[i][16]?></td>
+     </tr>
+     <?}?>
+    <?}?>
+    <script>
+    function myFunction(ID) {
+     google.run.script.getMileage(ID);
+     $("#"ID).hide();
+     
+    }
+    </script>
+    
+    <td></td>
+    </table>
+    </div> 
+    
+    
+    </form>
+    </div>
+ <?!= HtmlService.createHtmlOutputFromFile('CSS').getContent(); ?>
+
+
